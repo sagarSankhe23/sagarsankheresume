@@ -136,7 +136,7 @@ const D={
   name:"Sagar Shashikant Sankhe",
   phone:"+91 82377 14983",email:"sagarsankhe23@gmail.com",
   linkedin:"linkedin.com/in/sagarsankhe23",linkedinUrl:"https://www.linkedin.com/in/sagarsankhe23/",
-  loc:"Borivali, Mumbai 400092, India",qaforge:"qaforge.netlify.app",
+  loc:"Borivali, Mumbai, 400092",qaforge:"qaforge.netlify.app",portfolio:"sagarsankhe.netlify.app",
   nat:"Indian",dob:"23 January 1996",langs:"English, Hindi, Marathi",
   title:"Deputy Manager – Quality Assurance | Capital Markets & BFSI Fintech | 8+ Years",
   sum:{
@@ -161,7 +161,8 @@ const D={
        "Led RISK–BULLET backend validation: verified BOD file generation across 5 trading platforms (Omnesys, DBG, GREEK, ODIN, Symphony) — Holdings, Positions, Ledger, Client Blocking; validated scheduler jobs, data accuracy, and UAT-to-Production uploads.",
        "Owned QA for Account Opening – DIY (Web & Mobile) and Insta RM journeys including DDPI, Refer & Earn, and Empowerment Nominee; contributed to QA sign-off that secured exchange approval for Blink Trade EXE across all segments.",
        "Executed API testing (Postman), database validation (MS SQL), and performance/load testing (JMeter); integrated test execution reporting into Jenkins CI/CD pipeline; managed all defects in JIRA.",
-       "Built QA Forge — AI-powered test case management tool using Anthropic Claude API with Sprint Board, AI-generated Test Library, and Sign-off workflow — reducing test case authoring time by ~40%."],
+       "Built QA Forge — AI-powered test case management tool using Anthropic Claude API with Sprint Board, AI-generated Test Library, and Sign-off workflow — reducing test case authoring time by ~40%.",
+       "Actively involved in requirement analysis, test planning, defect management, release sign-off and collaborating with Product, Business, Developers & Support teams to ensure successful, high quality product deliveries."],
      bulletsDE:["Verantwortung für die gesamte QA-Strategie, Testplanung und Abnahmekriterien je Release-Zyklus — Ende-zu-Ende-Qualitätssicherung der JM Pro Handelsplattform; 25+ Produktions-Releases ohne kritische Fehler.",
        "Erstellung von 680+ strukturierten Testfällen inkl. vollständiger Auftragslebenszyklusmatrizen, ETF-Widgets, Flash Trade, Tages-GuV-Logik, WebSocket-Konnektivitätstests und BOD-Prüflisten.",
        "Leitung der RISK–BULLET Backend-Validierung: Prüfung der BOD-Dateigenerierung über 5 Handelsplattformen (Omnesys, DBG, GREEK, ODIN, Symphony).",
@@ -303,6 +304,7 @@ function sw(fmt){
     '<span class="ci">'+ico.em+' <a href="mailto:'+D.email+'">'+D.email+'</a></span>'+
     '<span class="ci">'+ico.li+' <a href="'+D.linkedinUrl+'" target="_blank">'+D.linkedin+'</a></span>'+
     '<span class="ci">'+ico.tl+' <a href="https://'+D.qaforge+'" target="_blank">'+D.qaforge+'</a></span>'+
+    (D.portfolio?'<span class="ci">'+ico.gl+' <a href="https://'+D.portfolio+'" target="_blank">'+D.portfolio+'</a></span>':'')+
     '</div>'+
     (extra.length?'<div class="extra-bar">'+extra.map(e=>'<span>'+e+'</span>').join('')+'</div>':'')+
     '</div></div>';
@@ -348,25 +350,26 @@ function buildATSPdf(fmt, f){
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({unit:'pt', format:'a4'});
   const pageW = 595.28, pageH = 841.89;
-  const marginL = 40, marginR = 40;
+  const marginL = 42, marginR = 42;
   const contentW = pageW - marginL - marginR;
-  let y = 40;
+  let y = 42;
   const green = [29,158,117];
   const dark = [26,26,26];
-  const gray = [85,85,85];
-  const lightGray = [136,136,136];
+  const gray = [84,84,84];
+  const lightGray = [135,135,135];
+  const FB = 'helvetica'; // Helvetica renders closest to Calibri/Arial metrics in jsPDF core fonts
 
   function checkPageBreak(neededHeight){
-    if(y + neededHeight > pageH - 40){
+    if(y + neededHeight > pageH - 38){
       doc.addPage();
-      y = 40;
+      y = 42;
     }
   }
 
   function addSectionHeader(label){
-    checkPageBreak(28);
-    y += 6;
-    doc.setFont('helvetica','bold');
+    checkPageBreak(26);
+    y += 7;
+    doc.setFont(FB,'bold');
     doc.setFontSize(10.5);
     doc.setTextColor(...green);
     doc.text(label.toUpperCase(), marginL, y);
@@ -378,7 +381,7 @@ function buildATSPdf(fmt, f){
   }
 
   function addWrappedText(text, x, width, fontSize, color, lineGap, fontStyle){
-    doc.setFont('helvetica', fontStyle||'normal');
+    doc.setFont(FB, fontStyle||'normal');
     doc.setFontSize(fontSize);
     doc.setTextColor(...color);
     const lines = doc.splitTextToSize(text, width);
@@ -390,7 +393,7 @@ function buildATSPdf(fmt, f){
   }
 
   function addBullet(text, fontSize, lineGap){
-    doc.setFont('helvetica','normal');
+    doc.setFont(FB,'normal');
     doc.setFontSize(fontSize);
     doc.setTextColor(...gray);
     const bulletIndent = 12;
@@ -408,75 +411,102 @@ function buildATSPdf(fmt, f){
   }
 
   // ── HEADER ──
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(20);
+  doc.setFont(FB,'bold');
+  doc.setFontSize(21);
   doc.setTextColor(...dark);
   doc.text(D.name, marginL, y);
   y += 20;
 
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(10.5);
-  doc.setTextColor(...green);
+  doc.setFont(FB,'bold');
+  doc.setFontSize(10.6);
+  doc.setTextColor(...dark);
   doc.text(D.title, marginL, y);
-  y += 16;
+  y += 15;
 
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(9);
+  // Line 1: location | phone | email  (phone & email are clickable)
+  doc.setFont(FB,'normal');
+  doc.setFontSize(9.5);
   doc.setTextColor(...gray);
-  let contactLine = D.loc + '   ' + D.phone + '   ' + D.email;
-  doc.text(contactLine, marginL, y);
-  y += 12;
-  let contactLine2 = D.linkedin + '   ' + D.qaforge;
-  doc.text(contactLine2, marginL, y);
-  y += 8;
+  let cx = marginL;
+  const sep = '  |  ';
 
+  function writeSeg(text, isLink, linkUrl, color){
+    doc.setTextColor(...(color||gray));
+    doc.text(text, cx, y);
+    const w = doc.getTextWidth(text);
+    if(isLink){
+      doc.link(cx, y-9, w, 11, {url:linkUrl});
+    }
+    cx += w;
+  }
+
+  cx = marginL;
+  writeSeg(D.loc, false);
+  writeSeg(sep, false);
+  writeSeg(D.phone, true, 'tel://'+D.phone.replace(/[^0-9]/g,''));
+  writeSeg(sep, false);
+  writeSeg(D.email, true, 'mailto:'+D.email);
+  y += 13;
+
+  // Line 2: linkedin | qaforge | portfolio (all clickable)
+  cx = marginL;
+  writeSeg(D.linkedin, true, D.linkedinUrl);
+  writeSeg(sep, false);
+  writeSeg(D.qaforge, true, 'https://'+D.qaforge+'/');
+  if(D.portfolio){
+    writeSeg(sep, false);
+    writeSeg(D.portfolio, true, 'https://'+D.portfolio+'/');
+  }
+  y += 10;
+
+  // Extra info (DOB/Nationality/Languages) for relevant formats
   let extras=[];
   if(f.dob) extras.push('DOB: '+D.dob);
   if(f.nat) extras.push('Nationality: '+D.nat);
   if(f.langs) extras.push('Languages: '+D.langs);
   if(extras.length){
-    y += 10;
+    y += 8;
+    doc.setFont(FB,'normal');
     doc.setFontSize(9);
     doc.setTextColor(...lightGray);
     doc.text(extras.join('   '), marginL, y);
-    y += 6;
+    y += 4;
   }
 
+  y += 8;
   doc.setDrawColor(...green);
   doc.setLineWidth(1.4);
-  y += 8;
   doc.line(marginL, y, pageW - marginR, y);
-  y += 6;
+  y += 8;
 
   // ── SUMMARY ──
   addSectionHeader(f.sumLbl);
-  addWrappedText(D.sum.IN, marginL, contentW, 9.3, gray, 12.5, 'normal');
+  addWrappedText(D.sum.IN, marginL, contentW, 9.4, gray, 12.6, 'normal');
   y += 6;
 
+  // ── CERTIFICATIONS (helper, used first or later depending on format) ──
   function renderCerts(){
     addSectionHeader(f.certLbl);
     D.certs.forEach(c=>{
-      checkPageBreak(14);
-      doc.setFont('helvetica','bold');
+      checkPageBreak(13);
+      doc.setFont(FB,'normal');
       doc.setFontSize(9.3);
       doc.setTextColor(...dark);
       let label = c.name + (c.ip ? '  (In Progress)' : '');
-      const labelLines = doc.splitTextToSize(label, contentW - 90);
+      const labelLines = doc.splitTextToSize(label, contentW - 95);
       doc.text(labelLines[0], marginL, y);
-      doc.setFont('helvetica','normal');
-      doc.setFontSize(8.5);
+      doc.setFont(FB,'normal');
+      doc.setFontSize(8.6);
       doc.setTextColor(...lightGray);
       doc.text(c.date, pageW - marginR, y, {align:'right'});
       y += 12;
-      if(labelLines.length>1){
-        doc.setFont('helvetica','bold');
+      for(let i=1;i<labelLines.length;i++){
+        checkPageBreak(12);
+        doc.setFont(FB,'normal');
         doc.setFontSize(9.3);
         doc.setTextColor(...dark);
-        for(let i=1;i<labelLines.length;i++){
-          checkPageBreak(12);
-          doc.text(labelLines[i], marginL, y);
-          y += 12;
-        }
+        doc.text(labelLines[i], marginL, y);
+        y += 12;
       }
     });
     y += 4;
@@ -488,12 +518,12 @@ function buildATSPdf(fmt, f){
   addSectionHeader(f.skillLbl);
   D.skills.forEach(s=>{
     checkPageBreak(13);
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(9.3);
+    doc.setFont(FB,'bold');
+    doc.setFontSize(9.4);
     doc.setTextColor(...dark);
     doc.text(s.cat, marginL, y);
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(9);
+    doc.setFont(FB,'normal');
+    doc.setFontSize(9.1);
     doc.setTextColor(...gray);
     const valLines = doc.splitTextToSize(s.val, contentW - 95);
     doc.text(valLines[0], marginL + 95, y);
@@ -508,24 +538,24 @@ function buildATSPdf(fmt, f){
 
   // ── EXPERIENCE ──
   addSectionHeader(f.expLbl);
-  D.exp.forEach((job, idx)=>{
+  D.exp.forEach((job)=>{
     checkPageBreak(30);
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(10.5);
+    doc.setFont(FB,'bold');
+    doc.setFontSize(10.6);
     doc.setTextColor(...dark);
     doc.text(job.title, marginL, y);
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(8.5);
-    doc.setTextColor(...lightGray);
+    doc.setFont(FB,'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...dark);
     doc.text(job.dates, pageW - marginR, y, {align:'right'});
     y += 12;
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(9);
-    doc.setTextColor(...green);
+    doc.setFont(FB,'normal');
+    doc.setFontSize(9.2);
+    doc.setTextColor(...gray);
     doc.text(job.co + '  ·  ' + job.loc, marginL, y);
     y += 13;
     job.bullets.slice(0, f.maxB).forEach(b=>{
-      addBullet(b, 8.8, 11.8);
+      addBullet(b, 8.9, 11.9);
     });
     y += 8;
   });
@@ -535,22 +565,29 @@ function buildATSPdf(fmt, f){
     addSectionHeader(f.projLbl);
     D.projects.forEach(p=>{
       checkPageBreak(24);
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(9.5);
+      doc.setFont(FB,'bold');
+      doc.setFontSize(9.6);
       doc.setTextColor(...dark);
       let nameText = p.name + (p.url ? '  -> ' + p.link : '');
       const nameLines = doc.splitTextToSize(nameText, contentW);
+      const startY = y;
       nameLines.forEach(line=>{
         checkPageBreak(12);
         doc.text(line, marginL, y);
         y += 11;
       });
+      if(p.url){
+        const w = doc.getTextWidth(p.name + '  -> ');
+        const linkW = doc.getTextWidth(p.link);
+        doc.link(marginL + w, startY - 9, linkW, 11, {url:p.url});
+      }
       y += 1;
-      addWrappedText(p.desc, marginL, contentW, 8.6, gray, 11.3, 'normal');
+      addWrappedText(p.desc, marginL, contentW, 8.7, gray, 11.4, 'normal');
       y += 7;
     });
   }
 
+  // ── CERTIFICATIONS (if not first) ──
   if(!f.certFirst) renderCerts();
 
   // ── AWARDS ──
@@ -558,13 +595,13 @@ function buildATSPdf(fmt, f){
     addSectionHeader(f.awardLbl);
     D.awards.forEach(a=>{
       checkPageBreak(22);
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(9.3);
+      doc.setFont(FB,'bold');
+      doc.setFontSize(9.4);
       doc.setTextColor(...dark);
       doc.text(a.t, marginL, y);
       y += 11;
-      doc.setFont('helvetica','normal');
-      doc.setFontSize(8.6);
+      doc.setFont(FB,'normal');
+      doc.setFontSize(8.7);
       doc.setTextColor(...lightGray);
       doc.text(a.o, marginL, y);
       y += 13;
@@ -574,24 +611,24 @@ function buildATSPdf(fmt, f){
   // ── HOBBIES ──
   if(f.showHob){
     addSectionHeader(f.hobLbl);
-    addWrappedText('Technology & AI Innovation - Capital Markets Research - Travel - Content Creation - Entrepreneurship', marginL, contentW, 8.8, gray, 11.8, 'normal');
+    addWrappedText('Technology & AI Innovation - Capital Markets Research - Travel - Content Creation - Entrepreneurship', marginL, contentW, 8.9, gray, 11.9, 'normal');
     y += 4;
   }
 
   // ── EDUCATION ──
   addSectionHeader(f.eduLbl);
   checkPageBreak(24);
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(9.8);
+  doc.setFont(FB,'bold');
+  doc.setFontSize(9.9);
   doc.setTextColor(...dark);
   doc.text(D.edu.deg, marginL, y);
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(8.6);
-  doc.setTextColor(...lightGray);
+  doc.setFont(FB,'normal');
+  doc.setFontSize(8.7);
+  doc.setTextColor(...dark);
   doc.text(D.edu.year, pageW - marginR, y, {align:'right'});
   y += 12;
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(8.8);
+  doc.setFont(FB,'normal');
+  doc.setFontSize(8.9);
   doc.setTextColor(...gray);
   doc.text(D.edu.inst, marginL, y);
   y += 10;
@@ -599,20 +636,21 @@ function buildATSPdf(fmt, f){
   // ── REFERENCES ──
   if(f.showRefs){
     addSectionHeader('References');
-    doc.setFont('helvetica','italic');
-    doc.setFontSize(8.8);
+    doc.setFont(FB,'italic');
+    doc.setFontSize(8.9);
     doc.setTextColor(...gray);
     doc.text('References available upon request.', marginL, y);
     y += 10;
   }
 
+  // ── Page numbers ──
   const totalPages = doc.internal.getNumberOfPages();
   for(let i=1;i<=totalPages;i++){
     doc.setPage(i);
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(8);
+    doc.setFont(FB,'normal');
+    doc.setFontSize(8.5);
     doc.setTextColor(...lightGray);
-    doc.text('Page '+i+' of '+totalPages, pageW - marginR, pageH - 25, {align:'right'});
+    doc.text('Page '+i+' of '+totalPages, pageW - marginR, pageH - 24, {align:'right'});
   }
 
   doc.save('Sagar_Sankhe_'+f.doc.replace(/\s/g,'_')+'_'+fmt+'.pdf');
