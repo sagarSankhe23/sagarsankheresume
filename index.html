@@ -1,414 +1,623 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Sagar Sankhe – QA Resume</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Sagar Sankhe – Resume</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#1D9E75;--gd:#0F6E56;--gl:#E1F5EE;--t:#1a1a1a;--tm:#555;--tl:#888;--b:#e0e0e0;--bg:#fff;--bg2:#f7f8f6;--r:8px;}
+body{font-family:'Inter',sans-serif;font-size:14px;line-height:1.65;color:var(--t);background:#f2f4f1;margin:0;padding:0;}
 
-  :root {
-    --green: #1D9E75;
-    --green-dark: #0F6E56;
-    --green-light: #E1F5EE;
-    --text: #1a1a1a;
-    --text-muted: #555;
-    --text-light: #888;
-    --border: #e0e0e0;
-    --bg: #ffffff;
-    --bg-secondary: #f7f8f6;
-    --radius: 8px;
-  }
+/* ── Toolbar ── */
+.toolbar{position:sticky;top:0;z-index:100;background:#111;padding:6px 14px;display:flex;align-items:center;justify-content:space-between;gap:6px;box-shadow:0 1px 6px rgba(0,0,0,.4);}
+.tl-left{display:flex;align-items:center;gap:6px;flex:1;min-width:0;}
+.tl-lbl{color:#888;font-size:11px;white-space:nowrap;flex-shrink:0;}
+.c-sel{appearance:none;-webkit-appearance:none;background:#222;border:1px solid #444;color:#fff;padding:4px 26px 4px 8px;border-radius:5px;font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;flex:1;min-width:0;max-width:220px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;}
+.c-sel:focus{outline:none;border-color:var(--green);}
+.fmt-badge{background:#1a1a1a;border:1px solid #333;color:#aaa;font-size:10px;padding:3px 8px;border-radius:12px;white-space:nowrap;flex-shrink:0;}
+.dl-btn{display:flex;align-items:center;gap:5px;background:var(--green);color:#fff;border:none;border-radius:5px;padding:5px 11px;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;transition:background .2s;flex-shrink:0;}
+.dl-btn:hover{background:var(--gd);}
+.dl-btn.loading{background:#444;cursor:not-allowed;}
 
-  body {
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    line-height: 1.65;
-    color: var(--text);
-    background: #f2f4f1;
-    padding: 2rem 1rem;
-  }
+/* hide badge on small screens to keep toolbar single-line */
+@media(max-width:700px){.fmt-badge{display:none;}}
+@media(max-width:480px){.tl-lbl{display:none;}.c-sel{max-width:100%;}}
 
-  .page {
-    max-width: 900px;
-    margin: 0 auto;
-    background: var(--bg);
-    border-radius: 12px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-    overflow: hidden;
-  }
+/* ── Page ── */
+.page-wrap{padding:0.8rem 0.8rem;}
+.page{max-width:900px;margin:0 auto;background:var(--bg);border-radius:12px;box-shadow:0 2px 16px rgba(0,0,0,.08);overflow:hidden;}
 
-  /* ── Header ── */
-  .header {
-    background: linear-gradient(135deg, #0d3d2e 0%, #1D9E75 100%);
-    padding: 2rem 2.5rem 1.75rem;
-    color: #fff;
-    position: relative;
-  }
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,#0d3d2e 0%,#1D9E75 100%);padding:1.1rem 1.6rem;color:#fff;}
+.hdr-inner{display:flex;gap:14px;align-items:flex-start;}
+.photo-wrap{flex-shrink:0;}
+.photo-wrap img{width:78px;height:95px;object-fit:cover;object-position:top center;border-radius:6px;border:2px solid rgba(255,255,255,.35);display:block;}
+.hdr-info{flex:1;min-width:0;}
+.name{font-size:21px;font-weight:600;letter-spacing:-.3px;color:#fff;margin-bottom:2px;}
+.hdr-title{font-size:11px;color:rgba(255,255,255,.78);margin-bottom:8px;line-height:1.4;}
+.contact-bar{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:10.5px;color:rgba(255,255,255,.85);}
+.contact-bar a{color:rgba(255,255,255,.9);text-decoration:none;}
+.contact-bar a:hover{text-decoration:underline;}
+.ci{display:flex;align-items:center;gap:3px;}
+.extra-bar{margin-top:6px;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:10px;color:rgba(255,255,255,.72);}
+.extra-bar span{display:flex;align-items:center;gap:3px;}
 
-  .header-inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-  }
+/* ── Body ── */
+.body{padding:1.1rem 1.6rem;}
+.section{margin-bottom:1rem;}
+.sec-label{font-size:9px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--gd);margin-bottom:6px;padding-bottom:3px;border-bottom:1.5px solid var(--gl);}
+.summary{font-size:11.5px;color:var(--tm);line-height:1.6;}
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;}
+.skill-row{display:flex;gap:6px;font-size:11px;}
+.sk-cat{font-weight:500;min-width:95px;flex-shrink:0;color:var(--t);}
+.sk-val{color:var(--tm);}
+.job{margin-bottom:0.9rem;padding-bottom:0.9rem;border-bottom:.5px solid var(--b);}
+.job:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0;}
+.job-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;flex-wrap:wrap;margin-bottom:1px;}
+.jt{font-weight:600;font-size:11.5px;}
+.jd{font-size:10px;color:var(--tl);white-space:nowrap;}
+.jco{font-size:10.5px;color:var(--gd);font-weight:500;margin-bottom:5px;}
+.bullets{list-style:none;padding:0;}
+.bullets li{font-size:11px;color:var(--tm);padding:1px 0 1px 12px;position:relative;line-height:1.5;}
+.bullets li::before{content:"▸";position:absolute;left:0;color:var(--green);font-size:9px;top:4px;}
+.proj{background:var(--bg2);border-radius:var(--r);border:.5px solid var(--b);padding:7px 10px;margin-bottom:6px;}
+.proj:last-child{margin-bottom:0;}
+.proj-name{font-weight:600;font-size:11px;margin-bottom:1px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.proj-link{font-size:10px;color:var(--green);text-decoration:none;font-weight:400;}
+.proj-link:hover{text-decoration:underline;}
+.proj-desc{font-size:10.5px;color:var(--tm);line-height:1.5;margin-top:2px;}
+.cert-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:4px 0;border-bottom:.5px solid var(--b);gap:6px;flex-wrap:wrap;}
+.cert-row:last-child{border-bottom:none;}
+.cert-name{color:var(--t);display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.cert-date{font-size:10px;color:var(--tl);white-space:nowrap;}
+.badge-pill{display:inline-block;font-size:9px;font-weight:600;padding:1px 6px;border-radius:999px;background:#fff3cd;color:#856404;border:.5px solid #ffc107;}
+.awards{display:flex;flex-wrap:wrap;gap:6px;}
+.award-pill{background:var(--bg2);border:.5px solid var(--b);border-radius:var(--r);padding:6px 10px;}
+.award-pill strong{display:block;font-size:11px;font-weight:500;color:var(--t);}
+.award-pill span{font-size:10px;color:var(--tl);}
+.edu-row{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:3px;}
+.edu-deg{font-weight:600;font-size:11.5px;}
+.edu-yr{font-size:10.5px;color:var(--tl);}
+.edu-inst{font-size:10.5px;color:var(--tm);margin-top:1px;}
+.ref-note{font-size:11px;color:var(--tm);font-style:italic;}
 
-  .header-left { flex: 1; min-width: 260px; }
-
-  .name {
-    font-size: 26px;
-    font-weight: 600;
-    letter-spacing: -0.3px;
-    color: #fff;
-    margin-bottom: 4px;
-  }
-
-  .job-title-header {
-    font-size: 13px;
-    font-weight: 400;
-    color: rgba(255,255,255,0.8);
-    letter-spacing: 0.3px;
-    margin-bottom: 14px;
-  }
-
-  .contact-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 16px;
-    font-size: 12px;
-    color: rgba(255,255,255,0.85);
-  }
-
-  .contact-bar a { color: rgba(255,255,255,0.9); text-decoration: none; }
-  .contact-bar a:hover { text-decoration: underline; color: #fff; }
-  .ci { display: flex; align-items: center; gap: 5px; }
-
-  /* ── Body ── */
-  .body { padding: 2rem 2.5rem; }
-
-  .section { margin-bottom: 1.75rem; }
-
-  .section-label {
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 1.6px;
-    text-transform: uppercase;
-    color: var(--green-dark);
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1.5px solid var(--green-light);
-  }
-
-  .summary {
-    font-size: 13.5px;
-    color: var(--text-muted);
-    line-height: 1.75;
-  }
-
-  /* Skills */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 7px 24px;
-  }
-
-  .skill-row { display: flex; gap: 8px; font-size: 13px; }
-  .skill-cat { font-weight: 500; min-width: 110px; flex-shrink: 0; color: var(--text); }
-  .skill-val { color: var(--text-muted); }
-
-  /* Experience */
-  .job { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border); }
-  .job:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
-
-  .job-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 2px;
-  }
-
-  .job-title { font-weight: 600; font-size: 14px; }
-  .job-date { font-size: 11.5px; color: var(--text-light); white-space: nowrap; }
-  .job-co { font-size: 12.5px; color: var(--green-dark); font-weight: 500; margin-bottom: 8px; }
-
-  .bullets { list-style: none; padding: 0; }
-  .bullets li {
-    font-size: 13px;
-    color: var(--text-muted);
-    padding: 3px 0 3px 16px;
-    position: relative;
-    line-height: 1.65;
-  }
-  .bullets li::before {
-    content: "▸";
-    position: absolute;
-    left: 0;
-    color: var(--green);
-    font-size: 10px;
-    top: 6px;
-  }
-
-  /* Projects */
-  .proj {
-    background: var(--bg-secondary);
-    border-radius: var(--radius);
-    border: 0.5px solid var(--border);
-    padding: 12px 14px;
-    margin-bottom: 10px;
-  }
-  .proj:last-child { margin-bottom: 0; }
-  .proj-name { font-weight: 600; font-size: 13.5px; margin-bottom: 2px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .proj-link { font-size: 11.5px; color: var(--green); text-decoration: none; font-weight: 400; }
-  .proj-link:hover { text-decoration: underline; }
-  .proj-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.65; margin-top: 4px; }
-
-  /* Certs */
-  .cert-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-    padding: 7px 0;
-    border-bottom: 0.5px solid var(--border);
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .cert-row:last-child { border-bottom: none; }
-  .cert-name { color: var(--text); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .cert-date { font-size: 11.5px; color: var(--text-light); white-space: nowrap; }
-
-  .badge-pill {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: #fff3cd;
-    color: #856404;
-    border: 0.5px solid #ffc107;
-  }
-
-  /* Awards */
-  .awards { display: flex; flex-wrap: wrap; gap: 10px; }
-  .award-pill {
-    background: var(--bg-secondary);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 9px 14px;
-  }
-  .award-pill strong { display: block; font-size: 13px; font-weight: 500; color: var(--text); }
-  .award-pill span { font-size: 11.5px; color: var(--text-light); }
-
-  /* Education */
-  .edu-row { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 4px; }
-  .edu-deg { font-weight: 600; font-size: 14px; }
-  .edu-year { font-size: 12px; color: var(--text-light); }
-  .edu-inst { font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
-
-  @media (max-width: 640px) {
-    .body { padding: 1.5rem 1.25rem; }
-    .header { padding: 1.5rem 1.25rem; }
-    .skills-grid { grid-template-columns: 1fr; }
-    .header-inner { flex-direction: column; }
-  }
+@media(max-width:640px){
+  .body{padding:1rem 0.9rem;}
+  .hdr{padding:1rem 0.9rem;}
+  .skills-grid{grid-template-columns:1fr;}
+  .hdr-inner{gap:10px;}
+  .photo-wrap img{width:65px;height:80px;}
+  .name{font-size:18px;}
+}
+@media print{.toolbar{display:none!important;}.page-wrap{padding:0;}.page{border-radius:0;box-shadow:none;}}
 </style>
-
 </head>
 <body>
 
-<div class="page">
-
-  <!-- Header -->
-  <div class="header">
-    <div class="header-inner">
-      <div class="header-left">
-        <div class="name">Sagar Shashikant Sankhe</div>
-        <div class="job-title-header">Deputy Manager – Quality Assurance &nbsp;·&nbsp; Capital Markets & BFSI Fintech &nbsp;·&nbsp; 8+ Years</div>
-        <div class="contact-bar">
-          <span class="ci">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-            Borivali, Mumbai 400092
-          </span>
-          <span class="ci">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.07 9.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012.98 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-            <a href="tel:+918237714983">+91 82377 14983</a>
-          </span>
-          <span class="ci">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            <a href="mailto:sagarsankhe23@gmail.com">sagarsankhe23@gmail.com</a>
-          </span>
-          <span class="ci">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-            <a href="https://www.linkedin.com/in/sagarsankhe23/" target="_blank">linkedin.com/in/sagarsankhe23</a>
-          </span>
-          <span class="ci">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
-            <a href="https://qaforge.netlify.app" target="_blank">qaforge.netlify.app</a>
-          </span>
-        </div>
-      </div>
-    </div>
+<div class="toolbar">
+  <div class="tl-left">
+    <span class="tl-lbl">Format:</span>
+    <select class="c-sel" id="cSel" onchange="sw(this.value)">
+      <option value="IN">🇮🇳 India — Resume</option>
+      <option value="US">🇺🇸 USA — Resume</option>
+      <option value="GB">🇬🇧 UK — CV</option>
+      <option value="AE">🇦🇪 UAE / Dubai — CV</option>
+      <option value="MY">🇲🇾 Malaysia — Resume</option>
+      <option value="SG">🇸🇬 Singapore — Resume</option>
+      <option value="CA">🇨🇦 Canada — Resume</option>
+      <option value="AU">🇦🇺 Australia — CV</option>
+      <option value="DE">🇩🇪 Germany — Lebenslauf</option>
+      <option value="FR">🇫🇷 France — CV</option>
+      <option value="JP">🇯🇵 Japan — 履歴書</option>
+    </select>
+    <span class="fmt-badge" id="fmtBadge">🇮🇳 Indian Format</span>
   </div>
+  <button class="dl-btn" id="dlBtn" onclick="dlPDF()">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Download PDF
+  </button>
+</div>
 
-  <!-- Body -->
-  <div class="body">
+<div class="page-wrap">
+  <div class="page" id="rPage">
+    <div class="hdr"><div id="hdrC"></div></div>
+    <div class="body" id="bodyC"></div>
+  </div>
+</div>
 
-    <!-- Summary -->
-    <div class="section">
-      <div class="section-label">Professional Summary</div>
-      <div class="summary">
-        8+ years of QA expertise in BFSI and capital markets fintech, delivering zero-defect production releases across trading and non-trading platforms (Mobile/Android/iOS, Web, EXE). Deep domain command in Equity, F&O, Currency, and Commodities — including OMS, RMS, and multi-exchange risk system validation. Proven record leading QA for JM Financial and Angel One (India's largest retail broker), with ownership of 680+ test cases, 500+ regression workflows, and BOD file validation across 5 trading platforms. ISTQB CTFL v4.0 certified. Creator of QA Forge — a proprietary AI-powered test management tool that cut test authoring time by 40%.
-      </div>
-    </div>
+<script>
+const PHOTO="data:image/jpeg;base64,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";
+const D={
+  name:"Sagar Shashikant Sankhe",
+  phone:"+91 82377 14983",email:"sagarsankhe23@gmail.com",
+  linkedin:"linkedin.com/in/sagarsankhe23",linkedinUrl:"https://www.linkedin.com/in/sagarsankhe23/",
+  loc:"Borivali, Mumbai 400092, India",qaforge:"qaforge.netlify.app",
+  nat:"Indian",dob:"23 January 1996",langs:"English, Hindi, Marathi",
+  title:"Deputy Manager – Quality Assurance | Capital Markets & BFSI Fintech | 8+ Years",
+  sum:{
+    IN:"8+ years of QA expertise in BFSI and capital markets fintech, delivering zero-defect production releases across trading and non-trading platforms (Mobile/Android/iOS, Web, EXE). Deep domain command in Equity, F&O, Currency, and Commodities — including OMS, RMS, and multi-exchange risk system validation. Proven record leading QA for JM Financial and Angel One (India's largest retail broker), with ownership of 680+ test cases, 500+ regression workflows, and BOD file validation across 5 trading platforms. ISTQB CTFL v4.0 certified. Creator of QA Forge — a proprietary AI-powered test management tool that cut test authoring time by 40%.",
+    US:"Results-driven QA professional with 8+ years delivering high-quality fintech trading platforms at scale. Led zero-defect releases across mobile, web, and desktop platforms — 680+ test cases owned, 40% reduction in test authoring time via AI tooling (QA Forge). Proven expertise in OMS/RMS validation, API testing, and performance engineering. ISTQB CTFL v4.0 certified.",
+    GB:"Experienced QA professional with over 8 years in BFSI and capital markets fintech. Demonstrated ability to lead end-to-end quality assurance across complex trading platforms covering Equity, F&O, Currency, and Commodities. Strong background in OMS/RMS validation, API and performance testing. Built QA Forge — an AI-powered test management tool — demonstrating technical leadership. ISTQB CTFL v4.0 certified.",
+    AE:"Dynamic QA professional with 8+ years of expertise in BFSI and capital markets fintech, with proven delivery across mobile, web, and EXE trading platforms. Deep domain knowledge in Equity, F&O, Currency, and Commodities. ISTQB CTFL v4.0 certified with AI Testing certification in progress. Creator of QA Forge. Open to relocation to UAE; available on short notice.",
+    MY:"Dedicated QA professional with 8+ years of experience in BFSI and capital markets fintech. Skilled in end-to-end testing of trading platforms across Mobile, Web, and EXE environments. Proven track record of zero critical production defects across 25+ releases. ISTQB CTFL v4.0 certified. Creator of QA Forge — an AI-powered test management tool.",
+    SG:"QA professional with 8+ years of fintech experience, specialising in capital markets trading platform validation across Equity, F&O, Currency, and Commodities. Strong API, performance, and database testing skills. ISTQB CTFL v4.0 certified. Seeking senior QA or QA Lead opportunities in Singapore's fintech sector.",
+    CA:"Accomplished QA professional with 8+ years in BFSI and capital markets fintech. Expertise in mobile, web, and desktop trading platform testing. Proven ability to lead QA strategy and mentor junior engineers. Creator of QA Forge — an AI-powered test case management tool. ISTQB CTFL v4.0 certified.",
+    AU:"Experienced QA professional with 8+ years in BFSI and capital markets fintech. Delivered 25+ zero-defect production releases. Strong technical skills in API testing, performance testing, and database validation. Designed and built QA Forge — an AI-powered test management tool. ISTQB CTFL v4.0 certified. Referees available upon request.",
+    DE:"Erfahrener Qualitätssicherungsexperte mit über 8 Jahren Tätigkeit im BFSI- und Kapitalmarkt-Fintech-Bereich. Umfangreiche Expertise in der Validierung von Handelssystemen (OMS/RMS) über Mobile-, Web- und EXE-Plattformen, mit Schwerpunkt auf Aktien-, Derivate-, Währungs- und Rohstoffmärkten. Verantwortlich für über 25 fehlerfreie Produktions-Releases. ISTQB CTFL v4.0 zertifiziert. Entwickler von QA Forge — einem KI-gestützten Test-Management-Tool auf Basis der Anthropic Claude API.",
+    FR:"Professionnel de l'assurance qualité avec plus de 8 ans d'expérience dans le secteur fintech et les marchés financiers. Expertise confirmée en validation de plateformes de trading couvrant actions, dérivés, devises et matières premières. Responsable de plus de 25 mises en production sans défaut critique. Certifié ISTQB CTFL v4.0. Créateur de QA Forge — un outil de gestion des tests alimenté par l'intelligence artificielle.",
+    JP:"BFSIおよび資本市場フィンテック分野で8年以上のQA経験を持つ専門家。株式・デリバティブ・通貨・商品を含むモバイル・Web・EXEトレーディングプラットフォームの品質保証をリード。25回以上の本番リリースをゼロ重大欠陥で納品。ISTQB CTFL v4.0認定取得済み。Anthropic Claude APIを活用したAI駆動テスト管理ツール「QA Forge」を開発・公開。"
+  },
+  exp:[
+    {title:"Deputy Manager – Quality Assurance",titleDE:"Stellvertretender Manager – Qualitätssicherung",titleFR:"Directeur Adjoint – Assurance Qualité",titleJP:"副マネージャー – 品質保証",
+     co:"JM Financial Services Limited",loc:"Andheri, Mumbai",
+     dates:"Feb 2025 – Present",datesDE:"Februar 2025 – heute",datesFR:"Février 2025 – Présent",datesJP:"2025年2月 – 現在",
+     bullets:["Defined QA strategy, test plan, and sign-off criteria for each release cycle — owned end-to-end quality delivery for JM Pro Trading Platform across Mobile (Android/iOS), Web, and Blink Trade EXE covering Equity, F&O, Currency, and Commodities; delivered 25+ production releases with zero critical post-release defects.",
+       "Authored 680+ structured test cases covering full order lifecycle matrices, Default Order Settings (MTF/NRML/CNC/MIS), ETF Widgets, Flash Trade, Day P&L logic, Disclose Qty, WebSocket broadcast connectivity, and BOD sanity checklists.",
+       "Led RISK–BULLET backend validation: verified BOD file generation across 5 trading platforms (Omnesys, DBG, GREEK, ODIN, Symphony) — Holdings, Positions, Ledger, Client Blocking; validated scheduler jobs, data accuracy, and UAT-to-Production uploads.",
+       "Owned QA for Account Opening – DIY (Web & Mobile) and Insta RM journeys including DDPI, Refer & Earn, and Empowerment Nominee; contributed to QA sign-off that secured exchange approval for Blink Trade EXE across all segments.",
+       "Executed API testing (Postman), database validation (MS SQL), and performance/load testing (JMeter); integrated test execution reporting into Jenkins CI/CD pipeline; managed all defects in JIRA.",
+       "Built QA Forge — AI-powered test case management tool using Anthropic Claude API with Sprint Board, AI-generated Test Library, and Sign-off workflow — reducing test case authoring time by ~40%."],
+     bulletsDE:["Verantwortung für die gesamte QA-Strategie, Testplanung und Abnahmekriterien je Release-Zyklus — Ende-zu-Ende-Qualitätssicherung der JM Pro Handelsplattform; 25+ Produktions-Releases ohne kritische Fehler.",
+       "Erstellung von 680+ strukturierten Testfällen inkl. vollständiger Auftragslebenszyklusmatrizen, ETF-Widgets, Flash Trade, Tages-GuV-Logik, WebSocket-Konnektivitätstests und BOD-Prüflisten.",
+       "Leitung der RISK–BULLET Backend-Validierung: Prüfung der BOD-Dateigenerierung über 5 Handelsplattformen (Omnesys, DBG, GREEK, ODIN, Symphony).",
+       "Entwicklung von QA Forge – einem KI-gestützten Testmanagement-Tool auf Basis der Anthropic Claude API – Reduzierung der Testfallerstell-Zeit um ~40%."],
+     bulletsFR:["Définition de la stratégie QA, du plan de test et des critères de validation pour chaque cycle de release — 25+ releases sans défaut critique.",
+       "Rédaction de 680+ cas de test couvrant les matrices de cycle de vie des ordres, les widgets ETF, Flash Trade, la logique P&L journalier, et les listes de contrôle BOD.",
+       "Direction de la validation backend RISK–BULLET sur 5 plateformes (Omnesys, DBG, GREEK, ODIN, Symphony).",
+       "Création de QA Forge — outil de gestion des tests alimenté par l'API Claude d'Anthropic — réduisant le temps de rédaction des cas de test de ~40%."],
+     bulletsJP:["各リリースサイクルのQA戦略・テスト計画・承認基準を策定。25回以上の本番リリースをゼロ重大欠陥で完了。",
+       "680件以上の構造化テストケースを作成。ETFウィジェット、Flash Trade、日次損益ロジック、WebSocket接続テスト、BODチェックリストを含む。",
+       "RISK-BULLET バックエンド検証をリード：5つのプラットフォームにわたるBODファイル生成を検証。",
+       "AI駆動テスト管理ツール「QA Forge」を開発。テストケース作成時間を約40%削減。"]},
+    {title:"Quality Engineer II",titleDE:"Qualitätsingenieur II",titleFR:"Ingénieur Qualité II",titleJP:"品質エンジニア II",
+     co:"Angel One Limited",loc:"Andheri, Mumbai",
+     dates:"Mar 2021 – Jan 2025 · 3 yrs 11 mo",datesDE:"März 2021 – Januar 2025",datesFR:"Mars 2021 – Janvier 2025",datesJP:"2021年3月 – 2025年1月（3年11ヶ月）",
+     bullets:["Owned QA strategy and delivery for Spark Trading Platform (Mobile & Web) — one of India's largest retail broking platforms — covering full OMS workflows for Equity and Derivatives across Android, iOS, and Web with bi-weekly release cycles.",
+       "Designed and maintained regression suites of 500+ critical trading workflows; ensured platform stability during high-volume sessions with zero P1 production incidents attributable to QA gaps.",
+       "Led QA for TWA (Trusted Web Activity) applications on Android and iOS; executed functional, sanity, API, DB, and performance testing with structured QA sign-off documentation.",
+       "Consistently identified 15–20 critical defects per release cycle; awarded QA of the Month (Jul 2024), League of Extraordinary Angelites (Jun 2023), and Outstanding Employee of the Month (Aug & Sep 2021)."],
+     bulletsDE:["Verantwortung für QA-Strategie der Spark Handelsplattform — eine der größten indischen Retail-Broker-Plattformen; null P1-Produktionsvorfälle.",
+       "500+ Regressions-Testfälle entworfen und gepflegt; Plattformstabilität bei hohem Transaktionsvolumen sichergestellt.",
+       "Identifizierung von 15–20 kritischen Fehlern pro Release-Zyklus; mehrfach als herausragender Mitarbeiter ausgezeichnet."],
+     bulletsFR:["Responsable de la stratégie QA pour la plateforme Spark — l'une des plus grandes plateformes de courtage retail en Inde; zéro incident P1 en production.",
+       "Conception et maintenance de suites de régression de 500+ workflows critiques.",
+       "Identification régulière de 15 à 20 défauts critiques par cycle de release; récompensé plusieurs fois."],
+     bulletsJP:["Spark トレーディングプラットフォームのQA戦略を担当。P1本番障害ゼロを達成。",
+       "500件以上のリグレッションテストスイートを設計・維持。",
+       "リリースサイクルごとに15〜20件の重大欠陥を継続的に発見。複数回の社員表彰を受賞。"]},
+    {title:"Quality Analyst",titleDE:"Qualitätsanalyst",titleFR:"Analyste Qualité",titleJP:"品質アナリスト",
+     co:"Rupeeseed Technologies Ventures Limited",loc:"Borivali, Mumbai",
+     dates:"Jul 2018 – Mar 2021 · 2 yrs 9 mo",datesDE:"Juli 2018 – März 2021",datesFR:"Juillet 2018 – Mars 2021",datesJP:"2018年7月 – 2021年3月（2年9ヶ月）",
+     bullets:["Tested OMS and RMS systems across Mobile, Web, and EXE platforms for multiple broker clients; validated risk rules, order blocking logic, and fund release mechanisms across Client Terminal and Dealer Terminal.",
+       "Prepared BRDs, test scenarios, and test cases for trading modules; validated Admin Terminal workflows — user management, Market Status, Transaction Monitoring, Market Surveillance, Risk Management, and Performance Analysis.",
+       "Verified amount block on order placement and release on cancellation; collaborated with broker partners, developers, and BAs — delivered comprehensive QA reports with sign-off for all production deployments."],
+     bulletsDE:["Testen von OMS- und RMS-Systemen über Mobile-, Web- und EXE-Plattformen für mehrere Broker-Kunden; Validierung von Risikoregeln und Auftragssperrlogik.",
+       "Erstellung von BRDs, Testszenarien und Testfällen; umfassende QA-Berichte mit Abnahme für alle Produktions-Deployments."],
+     bulletsFR:["Tests des systèmes OMS et RMS sur Mobile, Web et EXE pour plusieurs clients brokers; validation des règles de risque.",
+       "Rédaction des BRD, scénarios de test; rapports QA complets avec validation pour tous les déploiements en production."],
+     bulletsJP:["複数の証券会社クライアント向けにMobile・Web・EXEプラットフォームのOMS/RMSシステムをテスト。",
+       "全本番デプロイメントの包括的QAレポートを提供。"]}
+  ],
+  projects:[
+    {name:"QA Forge — AI-Powered Test Case Management Platform",nameDE:"QA Forge — KI-gestütztes Testmanagement-Tool",nameFR:"QA Forge — Outil de gestion des tests par IA",nameJP:"QA Forge — AI駆動テスト管理プラットフォーム",
+     link:"qaforge.netlify.app",url:"https://qaforge.netlify.app",
+     desc:"Designed and deployed a proprietary QA productivity tool integrating Anthropic Claude API via Cloudflare Worker proxy (CORS-safe), with Sprint Board, AI-generated Test Library, and Share & Sign-off module. Cuts test case authoring effort by ~40%.",
+     descDE:"Eigenentwicklung eines QA-Produktivitätstools mit Integration der Anthropic Claude API, Sprint-Board, KI-generierter Testbibliothek und Abnahme-Modul. Reduzierung des Testfall-Aufwands um ~40%.",
+     descFR:"Conception et déploiement d'un outil de productivité QA intégrant l'API Claude d'Anthropic, avec tableau de sprint, bibliothèque de tests générée par IA. Réduction de l'effort de ~40%.",
+     descJP:"Anthropic Claude APIを統合したQA生産性ツールを設計・公開。テストケース作成工数を約40%削減。"},
+    {name:"RISK–BULLET — Multi-Exchange Risk Management Validation",nameDE:"RISK-BULLET — Risikomanagementsystem-Validierung",nameFR:"RISK–BULLET — Validation du système de gestion des risques",nameJP:"RISK-BULLET — マルチ取引所リスク管理検証",
+     desc:"Led backend QA for BULLET risk management system — validated BOD file generation across 5 platforms (Omnesys, DBG, GREEK, ODIN, Symphony), scheduler job monitoring, data integrity checks, and UAT-to-Production deployment validation.",
+     descDE:"Leitung der Backend-QA für das BULLET-Risikomanagementsystem — BOD-Dateigenerierung über 5 Plattformen validiert.",
+     descFR:"Direction de la QA backend pour le système BULLET — validation de la génération de fichiers BOD sur 5 plateformes.",
+     descJP:"BULLETリスク管理システムのバックエンドQAをリード。5プラットフォームでのBODファイル生成を検証。"},
+    {name:"Blink Trade EXE — Exchange Approval QA",nameDE:"Blink Trade EXE — Börsenzulassungs-QA",nameFR:"Blink Trade EXE — Validation pour approbation boursière",nameJP:"Blink Trade EXE — 取引所承認QA",
+     desc:"Contributed to QA validation that secured full exchange approval for Blink Trade EXE across all segments — order flow, risk controls, compliance requirements, and performance benchmarks.",
+     descDE:"Beitrag zur QA-Validierung für die vollständige Börsenzulassung für Blink Trade EXE.",
+     descFR:"Contribution à la validation QA ayant permis d'obtenir l'approbation boursière pour Blink Trade EXE.",
+     descJP:"Blink Trade EXEの取引所承認を確保したQA検証に貢献。"}
+  ],
+  certs:[
+    {name:"ISTQB Certified Tester Foundation Level (CTFL) v4.0 — ISTQB",nameDE:"ISTQB Zertifizierter Tester Grundstufe (CTFL) v4.0",nameFR:"ISTQB Testeur Certifié Niveau Fondation (CTFL) v4.0",nameJP:"ISTQB認定テスター基礎レベル (CTFL) v4.0",date:"Oct 2024",dateDE:"Oktober 2024",dateFR:"Octobre 2024",dateJP:"2024年10月",ip:false},
+    {name:"ISTQB CT-AI: Certified Tester – AI Testing (Testing with Generative AI)",nameDE:"ISTQB CT-AI: Zertifizierter Tester – KI-Testing",nameFR:"ISTQB CT-AI : Testeur Certifié – Tests IA",nameJP:"ISTQB CT-AI：認定テスター – AIテスト",date:"Expected Jul 2026",dateDE:"Erwartet Juli 2026",dateFR:"Prévu Juillet 2026",dateJP:"2026年7月取得予定",ip:true},
+    {name:"Generative AI Tools — Skill Nation",nameDE:"Generative KI-Tools — Skill Nation",nameFR:"Outils IA Générative — Skill Nation",nameJP:"生成AIツール — Skill Nation",date:"Jun 2026",dateDE:"Juni 2026",dateFR:"Juin 2026",dateJP:"2026年6月",ip:false},
+    {name:"AI Tools Workshop — Be10x",nameDE:"KI-Tools Workshop — Be10x",nameFR:"Atelier Outils IA — Be10x",nameJP:"AIツールワークショップ — Be10x",date:"Mar 2026",dateDE:"März 2026",dateFR:"Mars 2026",dateJP:"2026年3月",ip:false}
+  ],
+  awards:[
+    {t:"QA of the Month",o:"Angel One Limited · July 2024"},
+    {t:"League of Extraordinary Angelites",o:"Angel One Limited · June 2023"},
+    {t:"Outstanding Employee (Consecutive)",o:"Angel One Limited · Aug & Sep 2021"}
+  ],
+  skills:[
+    {cat:"Domain",val:"Equity · F&O · Currency · Commodities · OMS · RMS · SEBI-Regulated Platforms · Capital Markets"},
+    {cat:"Testing Types",val:"Functional · Regression · System · Sanity · Smoke · API (REST) · DB Validation · Performance/Load · UAT · Production Sign-off"},
+    {cat:"Tools",val:"JIRA · Postman · Apache JMeter · LambdaTest · Jenkins · Claude AI (Anthropic) · QA Forge"},
+    {cat:"Platforms",val:"Android · iOS · Web · EXE · TWA (Trusted Web Activity) · Admin-NEST"},
+    {cat:"Database",val:"MS SQL Server"},
+    {cat:"Methodology",val:"Agile/Scrum · Sprint QA · Defect Life Cycle · BOD File Validation · Test Strategy & Planning"}
+  ],
+  edu:{deg:"B.E. — Information Technology",degDE:"B.E. — Informationstechnologie",degFR:"B.E. — Technologies de l'Information",degJP:"工学士 — 情報技術",inst:"Vidyavardhini's College of Engineering & Technology, Vasai · Mumbai University",year:"2017"}
+};
 
-    <!-- Skills -->
-    <div class="section">
-      <div class="section-label">Key Skills & Competencies</div>
-      <div class="skills-grid">
-        <div class="skill-row"><span class="skill-cat">Domain</span><span class="skill-val">Equity · F&O · Currency · Commodities · OMS · RMS · SEBI-Regulated Platforms · Capital Markets</span></div>
-        <div class="skill-row"><span class="skill-cat">Testing Types</span><span class="skill-val">Functional · Regression · System · Sanity · Smoke · API (REST) · DB Validation · Performance/Load · UAT · Production Sign-off</span></div>
-        <div class="skill-row"><span class="skill-cat">Tools</span><span class="skill-val">JIRA · Postman · Apache JMeter · LambdaTest · Jenkins · Claude AI (Anthropic) · QA Forge</span></div>
-        <div class="skill-row"><span class="skill-cat">Platforms</span><span class="skill-val">Android · iOS · Web · EXE · TWA (Trusted Web Activity) · Admin-NEST</span></div>
-        <div class="skill-row"><span class="skill-cat">Database</span><span class="skill-val">MS SQL Server</span></div>
-        <div class="skill-row"><span class="skill-cat">Methodology</span><span class="skill-val">Agile/Scrum · Sprint QA · Defect Life Cycle · BOD File Validation · Test Strategy & Planning</span></div>
-      </div>
-    </div>
+const F={
+  IN:{lbl:"🇮🇳 Indian Format",doc:"Resume",photo:false,dob:false,nat:false,langs:false,sumLbl:"Professional Summary",expLbl:"Professional Experience",skillLbl:"Key Skills & Competencies",certLbl:"Certifications",eduLbl:"Education",awardLbl:"Honors & Awards",hobLbl:"",projLbl:"Key Projects & Achievements",certFirst:false,showProj:true,showAwards:true,showHob:false,showRefs:false,maxB:99},
+  US:{lbl:"🇺🇸 US Format",doc:"Resume",photo:false,dob:false,nat:false,langs:false,sumLbl:"Professional Summary",expLbl:"Experience",skillLbl:"Core Competencies",certLbl:"Certifications",eduLbl:"Education",awardLbl:"Honors & Awards",hobLbl:"",projLbl:"Key Projects",certFirst:false,showProj:true,showAwards:true,showHob:false,showRefs:false,maxB:3},
+  GB:{lbl:"🇬🇧 UK Format · CV",doc:"Curriculum Vitae",photo:false,dob:false,nat:false,langs:false,sumLbl:"Personal Statement",expLbl:"Career History",skillLbl:"Key Skills",certLbl:"Certifications",eduLbl:"Education",awardLbl:"Awards & Recognition",hobLbl:"",projLbl:"Key Projects",certFirst:false,showProj:true,showAwards:true,showHob:false,showRefs:true,maxB:99},
+  AE:{lbl:"🇦🇪 UAE Format · CV",doc:"Curriculum Vitae",photo:false,dob:true,nat:true,langs:true,sumLbl:"Career Objective",expLbl:"Professional Experience",skillLbl:"Key Skills",certLbl:"Certifications",eduLbl:"Education",awardLbl:"Honors & Awards",hobLbl:"",projLbl:"Key Projects",certFirst:true,showProj:true,showAwards:true,showHob:false,showRefs:false,maxB:99},
+  MY:{lbl:"🇲🇾 Malaysia Format",doc:"Resume",photo:true,dob:true,nat:true,langs:true,sumLbl:"Career Objective",expLbl:"Work Experience",skillLbl:"Key Skills",certLbl:"Certifications",eduLbl:"Education",awardLbl:"Awards",hobLbl:"",projLbl:"Projects",certFirst:false,showProj:true,showAwards:true,showHob:false,showRefs:true,maxB:99},
+  SG:{lbl:"🇸🇬 Singapore Format",doc:"Resume",photo:false,dob:false,nat:true,langs:false,sumLbl:"Professional Summary",expLbl:"Work Experience",skillLbl:"Skills",certLbl:"Certifications",eduLbl:"Education",awardLbl:"Awards",hobLbl:"",projLbl:"Projects",certFirst:false,showProj:true,showAwards:true,showHob:false,showRefs:false,maxB:99},
+  CA:{lbl:"🇨🇦 Canada Format",doc:"Resume",photo:false,dob:false,nat:false,langs:false,sumLbl:"Professional Summary",expLbl:"Experience",skillLbl:"Core Competencies",certLbl:"Certifications",eduLbl:"Education",awardLbl:"Awards",hobLbl:"",projLbl:"Projects",certFirst:false,showProj:true,showAwards:true,showHob:false,showRefs:false,maxB:4},
+  AU:{lbl:"🇦🇺 Australia Format · CV",doc:"Curriculum Vitae",photo:false,dob:false,nat:false,langs:false,sumLbl:"Professional Summary",expLbl:"Employment History",skillLbl:"Key Skills",certLbl:"Certifications",eduLbl:"Education",awardLbl:"Awards",hobLbl:"",projLbl:"Key Projects",certFirst:false,showProj:true,showAwards:true,showHob:false,showRefs:true,maxB:99},
+  DE:{lbl:"🇩🇪 Germany · Lebenslauf",doc:"Lebenslauf",photo:true,dob:true,nat:true,langs:true,sumLbl:"Profil (Summary)",expLbl:"Berufserfahrung (Experience)",skillLbl:"Kenntnisse & Fähigkeiten (Skills)",certLbl:"Zertifizierungen (Certifications)",eduLbl:"Ausbildung (Education)",awardLbl:"",hobLbl:"Interessen & Hobbys (Hobbies)",projLbl:"Projekte (Projects)",certFirst:true,showProj:true,showAwards:false,showHob:true,showRefs:false,maxB:99},
+  FR:{lbl:"🇫🇷 France Format · CV",doc:"Curriculum Vitae",photo:true,dob:true,nat:true,langs:true,sumLbl:"Profil Professionnel (Summary)",expLbl:"Expérience Professionnelle (Experience)",skillLbl:"Compétences (Skills)",certLbl:"Certifications",eduLbl:"Formation (Education)",awardLbl:"",hobLbl:"Centres d'Intérêt (Hobbies)",projLbl:"Projets (Projects)",certFirst:false,showProj:true,showAwards:false,showHob:true,showRefs:false,maxB:4},
+  JP:{lbl:"🇯🇵 Japan Format · 履歴書",doc:"履歴書",photo:true,dob:true,nat:true,langs:true,sumLbl:"自己PR (Summary)",expLbl:"職歴 (Experience)",skillLbl:"スキル・技術 (Skills)",certLbl:"資格・認定 (Certifications)",eduLbl:"学歴 (Education)",awardLbl:"受賞歴 (Awards)",hobLbl:"",projLbl:"主要プロジェクト (Projects)",certFirst:true,showProj:true,showAwards:true,showHob:false,showRefs:false,maxB:99}
+};
 
-    <!-- Experience -->
-    <div class="section">
-      <div class="section-label">Professional Experience</div>
+const ico={
+  loc:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+  ph:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.07 9.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012.98 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>',
+  em:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+  li:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>',
+  tl:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>',
+  gl:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>',
+  us:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
+};
 
-      <div class="job">
-        <div class="job-header">
-          <span class="job-title">Deputy Manager – Quality Assurance</span>
-          <span class="job-date">Feb 2025 – Present</span>
-        </div>
-        <div class="job-co">JM Financial Services Limited · Andheri, Mumbai</div>
-        <ul class="bullets">
-          <li>Defined QA strategy, test plan, and sign-off criteria for each release cycle — owned end-to-end quality delivery for JM Pro Trading Platform across Mobile (Android/iOS), Web, and Blink Trade EXE covering Equity, F&O, Currency, and Commodities; delivered 25+ production releases with zero critical post-release defects.</li>
-          <li>Authored 680+ structured test cases covering full order lifecycle matrices, Default Order Settings (MTF/NRML/CNC/MIS), ETF Widgets, Flash Trade, Day P&L logic, Disclose Qty, WebSocket broadcast connectivity, and BOD sanity checklists.</li>
-          <li>Led RISK–BULLET backend validation: verified BOD file generation across 5 trading platforms (Omnesys, DBG, GREEK, ODIN, Symphony) — Holdings, Positions, Ledger, Client Blocking; validated scheduler jobs, data accuracy, and UAT-to-Production uploads.</li>
-          <li>Owned QA for Account Opening – DIY (Web & Mobile) and Insta RM journeys including DDPI, Refer &amp; Earn, and Empowerment Nominee; contributed to QA sign-off that secured exchange approval for Blink Trade EXE across all segments.</li>
-          <li>Executed API testing (Postman), database validation (MS SQL), and performance/load testing (JMeter) for all UAT and production releases; integrated test execution reporting into Jenkins CI/CD pipeline; managed all defects in JIRA with structured severity classification.</li>
-          <li>Built <strong>QA Forge</strong> (qaforge.netlify.app) — AI-powered test case management tool using Anthropic Claude API with Sprint Board, AI-generated Test Library, and Sign-off workflow — reducing test case authoring time by ~40%; mentored junior QA engineers on test design and defect reporting practices.</li>
-        </ul>
-      </div>
+function gB(j,f){return j.bullets;}
+function gT(j,f){return j.title;}
+function gD(j,f){return j.dates;}
+function gPN(p,f){return p.name;}
+function gPD(p,f){return p.desc;}
+function gCN(c,f){return c.name;}
+function gCD(c,f){return c.date;}
+function ipLbl(f){return "In Progress";}
 
-      <div class="job">
-        <div class="job-header">
-          <span class="job-title">Quality Engineer II</span>
-          <span class="job-date">Mar 2021 – Jan 2025 · 3 yrs 11 mo</span>
-        </div>
-        <div class="job-co">Angel One Limited · Andheri, Mumbai</div>
-        <ul class="bullets">
-          <li>Owned QA strategy and delivery for Spark Trading Platform (Mobile & Web) — one of India's largest retail broking platforms — covering full OMS workflows for Equity and Derivatives across Android, iOS, and Web with bi-weekly release cycles.</li>
-          <li>Designed and maintained regression suites of 500+ critical trading workflows; evaluated automation feasibility for regression suite; ensured platform stability during high-volume sessions with zero P1 production incidents attributable to QA gaps.</li>
-          <li>Led QA for TWA (Trusted Web Activity) applications on Android and iOS, ensuring feature parity and performance benchmarks; executed functional, sanity, API, DB, and performance testing with structured QA sign-off documentation.</li>
-          <li>Consistently identified 15–20 critical defects per release cycle; awarded QA of the Month (Jul 2024), League of Extraordinary Angelites (Jun 2023), and Outstanding Employee of the Month (Aug & Sep 2021).</li>
-        </ul>
-      </div>
+function certsHTML(fmt){
+  const f=F[fmt];
+  return '<div class="section"><div class="sec-label">'+f.certLbl+'</div>'+D.certs.map(c=>'<div class="cert-row"><span class="cert-name">'+gCN(c,fmt)+(c.ip?'<span class="badge-pill">'+ipLbl(fmt)+'</span>':'')+'</span><span class="cert-date">'+gCD(c,fmt)+'</span></div>').join('')+'</div>';
+}
 
-      <div class="job">
-        <div class="job-header">
-          <span class="job-title">Quality Analyst</span>
-          <span class="job-date">Jul 2018 – Mar 2021 · 2 yrs 9 mo</span>
-        </div>
-        <div class="job-co">Rupeeseed Technologies Ventures Limited · Borivali, Mumbai</div>
-        <ul class="bullets">
-          <li>Tested OMS and RMS systems across Mobile, Web, and EXE platforms for multiple broker clients; validated risk rules, order blocking logic, and fund release mechanisms across Client Terminal and Dealer Terminal.</li>
-          <li>Prepared BRDs, test scenarios, and test cases for trading modules; validated Admin Terminal workflows — user management, Market Status, Transaction Monitoring, Market Surveillance, Risk Management, and Performance Analysis.</li>
-          <li>Verified amount block on order placement and release on cancellation; collaborated with broker partners, developers, and BAs — delivered comprehensive QA reports with sign-off for all production deployments.</li>
-        </ul>
-      </div>
-    </div>
+function sw(fmt){
+  const f=F[fmt];
+  document.getElementById("fmtBadge").textContent=f.lbl;
+  document.title="Sagar Sankhe – "+f.doc;
 
-    <!-- Projects -->
-    <div class="section">
-      <div class="section-label">Key Projects & Achievements</div>
+  const photoHTML=f.photo?'<div class="photo-wrap" style="flex-shrink:0;"><img src="'+PHOTO+'" alt="Sagar Sankhe"/></div>':"";
+  let extra=[];
+  if(f.dob)extra.push(ico.us+' DOB: '+D.dob);
+  if(f.nat)extra.push(ico.gl+' Nationality: '+D.nat);
+  if(f.langs)extra.push(ico.gl+' Languages: '+D.langs);
 
-      <div class="proj">
-        <div class="proj-name">
-          QA Forge — AI-Powered Test Case Management Platform
-          <a class="proj-link" href="https://qaforge.netlify.app" target="_blank">↗ qaforge.netlify.app</a>
-        </div>
-        <div class="proj-desc">Designed and deployed a proprietary QA productivity tool integrating Anthropic Claude API via Cloudflare Worker proxy (CORS-safe), with Sprint Board, AI-generated Test Library, and Share & Sign-off module. Demonstrates hands-on AI-augmented quality engineering, REST API integration, and full-stack Netlify deployment. Cuts test case authoring effort by ~40%.</div>
-      </div>
+  document.getElementById("hdrC").innerHTML=
+    '<div class="hdr-inner">'+photoHTML+
+    '<div class="hdr-info">'+
+    '<div class="name">'+D.name+'</div>'+
+    '<div class="hdr-title">'+D.title+'</div>'+
+    '<div class="contact-bar">'+
+    '<span class="ci">'+ico.loc+' '+D.loc+'</span>'+
+    '<span class="ci">'+ico.ph+' <a href="tel:+918237714983">'+D.phone+'</a></span>'+
+    '<span class="ci">'+ico.em+' <a href="mailto:'+D.email+'">'+D.email+'</a></span>'+
+    '<span class="ci">'+ico.li+' <a href="'+D.linkedinUrl+'" target="_blank">'+D.linkedin+'</a></span>'+
+    '<span class="ci">'+ico.tl+' <a href="https://'+D.qaforge+'" target="_blank">'+D.qaforge+'</a></span>'+
+    '</div>'+
+    (extra.length?'<div class="extra-bar">'+extra.map(e=>'<span>'+e+'</span>').join('')+'</div>':'')+
+    '</div></div>';
 
-      <div class="proj">
-        <div class="proj-name">RISK–BULLET — Multi-Exchange Risk Management Validation · JM Financial</div>
-        <div class="proj-desc">Led backend QA for BULLET risk management system — validated BOD file generation across 5 platforms (Omnesys, DBG, GREEK, ODIN, Symphony), scheduler job monitoring, data integrity checks, and UAT-to-Production deployment validation across all exchanges.</div>
-      </div>
+  const expLbls={DE:"Berufserfahrung (Experience)",FR:"Expérience Professionnelle (Experience)",JP:"職歴 (Experience)"};
+  const skillLbls={DE:"Kenntnisse & Fähigkeiten (Skills)",FR:"Compétences (Skills)",JP:"スキル・技術 (Skills)"};
+  const eduLbls={DE:"Ausbildung (Education)",FR:"Formation (Education)",JP:"学歴 (Education)"};
 
-      <div class="proj">
-        <div class="proj-name">Blink Trade EXE — Exchange Approval QA · JM Financial</div>
-        <div class="proj-desc">Contributed to QA validation that secured full exchange approval for Blink Trade EXE across all segments — order flow, risk controls, compliance requirements, and performance benchmarks validated across all trading session types.</div>
-      </div>
-    </div>
+  let h="";
+  h+='<div class="section"><div class="sec-label">'+f.sumLbl+'</div><div class="summary">'+D.sum.IN+'</div></div>';
+  if(f.certFirst)h+=certsHTML(fmt);
+  h+='<div class="section"><div class="sec-label">'+(skillLbls[fmt]||f.skillLbl)+'</div><div class="skills-grid">'+D.skills.map(s=>'<div class="skill-row"><span class="sk-cat">'+s.cat+'</span><span class="sk-val">'+s.val+'</span></div>').join('')+'</div></div>';
+  h+='<div class="section"><div class="sec-label">'+(expLbls[fmt]||f.expLbl)+'</div>'+D.exp.map(j=>'<div class="job"><div class="job-hdr"><span class="jt">'+gT(j,fmt)+'</span><span class="jd">'+gD(j,fmt)+'</span></div><div class="jco">'+j.co+' · '+j.loc+'</div><ul class="bullets">'+gB(j,fmt).slice(0,f.maxB).map(b=>'<li>'+b+'</li>').join('')+'</ul></div>').join('')+'</div>';
+  if(f.showProj)h+='<div class="section"><div class="sec-label">'+f.projLbl+'</div>'+D.projects.map(p=>'<div class="proj"><div class="proj-name">'+gPN(p,fmt)+(p.url?'<a class="proj-link" href="'+p.url+'" target="_blank">↗ '+p.link+'</a>':'')+'</div><div class="proj-desc">'+gPD(p,fmt)+'</div></div>').join('')+'</div>';
+  if(!f.certFirst)h+=certsHTML(fmt);
+  if(f.showAwards&&f.awardLbl)h+='<div class="section"><div class="sec-label">'+f.awardLbl+'</div><div class="awards">'+D.awards.map(a=>'<div class="award-pill"><strong>'+a.t+'</strong><span>'+a.o+'</span></div>').join('')+'</div></div>';
+  if(f.showHob)h+='<div class="section"><div class="sec-label">'+f.hobLbl+'</div><div class="summary">Technology & AI Innovation · Capital Markets Research · Travel · Content Creation · Entrepreneurship</div></div>';
+  h+='<div class="section"><div class="sec-label">'+(eduLbls[fmt]||f.eduLbl)+'</div><div class="edu-row"><div><div class="edu-deg">'+D.edu.deg+'</div><div class="edu-inst">'+D.edu.inst+'</div></div><span class="edu-yr">'+D.edu.year+'</span></div></div>';
+  if(f.showRefs)h+='<div class="section"><div class="sec-label">References</div><div class="ref-note">'+(fmt==="AU"?"Referees available upon request.":"References available upon request.")+'</div></div>';
 
-    <!-- Certifications -->
-    <div class="section">
-      <div class="section-label">Certifications</div>
-      <div class="cert-row">
-        <span class="cert-name">ISTQB Certified Tester Foundation Level (CTFL) v4.0 — International Software Testing Qualifications Board</span>
-        <span class="cert-date">Oct 2024</span>
-      </div>
-      <div class="cert-row">
-        <span class="cert-name">
-          ISTQB CT-AI: Certified Tester – AI Testing (Testing with Generative AI)
-          <span class="badge-pill">In Progress</span>
-        </span>
-        <span class="cert-date">Expected Jul 2026</span>
-      </div>
-      <div class="cert-row">
-        <span class="cert-name">Generative AI Tools — Skill Nation</span>
-        <span class="cert-date">Jun 2026</span>
-      </div>
-      <div class="cert-row">
-        <span class="cert-name">AI Tools Workshop — Be10x</span>
-        <span class="cert-date">Mar 2026</span>
-      </div>
-    </div>
+  document.getElementById("bodyC").innerHTML=h;
+}
 
-    <!-- Awards -->
-    <div class="section">
-      <div class="section-label">Honors & Awards</div>
-      <div class="awards">
-        <div class="award-pill">
-          <strong>QA of the Month</strong>
-          <span>Angel One Limited · July 2024</span>
-        </div>
-        <div class="award-pill">
-          <strong>League of Extraordinary Angelites</strong>
-          <span>Angel One Limited · June 2023</span>
-        </div>
-        <div class="award-pill">
-          <strong>Outstanding Employee (Consecutive)</strong>
-          <span>Angel One Limited · Aug & Sep 2021</span>
-        </div>
-      </div>
-    </div>
+function dlPDF(){
+  const fmt=document.getElementById("cSel").value;
+  const f=F[fmt];
+  const btn=document.getElementById("dlBtn");
+  btn.classList.add("loading");
+  btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Generating...';
 
-    <!-- Education -->
-    <div class="section">
-      <div class="section-label">Education</div>
-      <div class="edu-row">
-        <div>
-          <div class="edu-deg">B.E. — Information Technology</div>
-          <div class="edu-inst">Vidyavardhini's College of Engineering & Technology, Vasai · Mumbai University</div>
-        </div>
-        <span class="edu-year">2017</span>
-      </div>
-    </div>
+  setTimeout(()=>{
+    try{
+      buildATSPdf(fmt,f);
+    } finally {
+      btn.classList.remove('loading');
+      btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download PDF';
+    }
+  }, 50);
+}
 
-  </div><!-- /body -->
+// ── Clean ATS-friendly text-based PDF (jsPDF) — matches 2-page layout ──
+function buildATSPdf(fmt, f){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'pt', format:'a4'});
+  const pageW = 595.28, pageH = 841.89;
+  const marginL = 40, marginR = 40;
+  const contentW = pageW - marginL - marginR;
+  let y = 40;
+  const green = [29,158,117];
+  const dark = [26,26,26];
+  const gray = [85,85,85];
+  const lightGray = [136,136,136];
 
-</div><!-- /page -->
+  function checkPageBreak(neededHeight){
+    if(y + neededHeight > pageH - 40){
+      doc.addPage();
+      y = 40;
+    }
+  }
 
+  function addSectionHeader(label){
+    checkPageBreak(28);
+    y += 6;
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(10.5);
+    doc.setTextColor(...green);
+    doc.text(label.toUpperCase(), marginL, y);
+    y += 4;
+    doc.setDrawColor(...green);
+    doc.setLineWidth(1.1);
+    doc.line(marginL, y, pageW - marginR, y);
+    y += 14;
+  }
+
+  function addWrappedText(text, x, width, fontSize, color, lineGap, fontStyle){
+    doc.setFont('helvetica', fontStyle||'normal');
+    doc.setFontSize(fontSize);
+    doc.setTextColor(...color);
+    const lines = doc.splitTextToSize(text, width);
+    lines.forEach(line=>{
+      checkPageBreak(lineGap+2);
+      doc.text(line, x, y);
+      y += lineGap;
+    });
+  }
+
+  function addBullet(text, fontSize, lineGap){
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(fontSize);
+    doc.setTextColor(...gray);
+    const bulletIndent = 12;
+    const lines = doc.splitTextToSize(text, contentW - bulletIndent);
+    lines.forEach((line,i)=>{
+      checkPageBreak(lineGap+2);
+      if(i===0){
+        doc.setTextColor(...green);
+        doc.text('•', marginL, y);
+        doc.setTextColor(...gray);
+      }
+      doc.text(line, marginL + bulletIndent, y);
+      y += lineGap;
+    });
+  }
+
+  // ── HEADER ──
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(20);
+  doc.setTextColor(...dark);
+  doc.text(D.name, marginL, y);
+  y += 20;
+
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(10.5);
+  doc.setTextColor(...green);
+  doc.text(D.title, marginL, y);
+  y += 16;
+
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...gray);
+  let contactLine = D.loc + '   ' + D.phone + '   ' + D.email;
+  doc.text(contactLine, marginL, y);
+  y += 12;
+  let contactLine2 = D.linkedin + '   ' + D.qaforge;
+  doc.text(contactLine2, marginL, y);
+  y += 8;
+
+  let extras=[];
+  if(f.dob) extras.push('DOB: '+D.dob);
+  if(f.nat) extras.push('Nationality: '+D.nat);
+  if(f.langs) extras.push('Languages: '+D.langs);
+  if(extras.length){
+    y += 10;
+    doc.setFontSize(9);
+    doc.setTextColor(...lightGray);
+    doc.text(extras.join('   '), marginL, y);
+    y += 6;
+  }
+
+  doc.setDrawColor(...green);
+  doc.setLineWidth(1.4);
+  y += 8;
+  doc.line(marginL, y, pageW - marginR, y);
+  y += 6;
+
+  // ── SUMMARY ──
+  addSectionHeader(f.sumLbl);
+  addWrappedText(D.sum.IN, marginL, contentW, 9.3, gray, 12.5, 'normal');
+  y += 6;
+
+  function renderCerts(){
+    addSectionHeader(f.certLbl);
+    D.certs.forEach(c=>{
+      checkPageBreak(14);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(9.3);
+      doc.setTextColor(...dark);
+      let label = c.name + (c.ip ? '  (In Progress)' : '');
+      const labelLines = doc.splitTextToSize(label, contentW - 90);
+      doc.text(labelLines[0], marginL, y);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(8.5);
+      doc.setTextColor(...lightGray);
+      doc.text(c.date, pageW - marginR, y, {align:'right'});
+      y += 12;
+      if(labelLines.length>1){
+        doc.setFont('helvetica','bold');
+        doc.setFontSize(9.3);
+        doc.setTextColor(...dark);
+        for(let i=1;i<labelLines.length;i++){
+          checkPageBreak(12);
+          doc.text(labelLines[i], marginL, y);
+          y += 12;
+        }
+      }
+    });
+    y += 4;
+  }
+
+  if(f.certFirst) renderCerts();
+
+  // ── SKILLS ──
+  addSectionHeader(f.skillLbl);
+  D.skills.forEach(s=>{
+    checkPageBreak(13);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9.3);
+    doc.setTextColor(...dark);
+    doc.text(s.cat, marginL, y);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...gray);
+    const valLines = doc.splitTextToSize(s.val, contentW - 95);
+    doc.text(valLines[0], marginL + 95, y);
+    y += 12;
+    for(let i=1;i<valLines.length;i++){
+      checkPageBreak(12);
+      doc.text(valLines[i], marginL + 95, y);
+      y += 12;
+    }
+  });
+  y += 6;
+
+  // ── EXPERIENCE ──
+  addSectionHeader(f.expLbl);
+  D.exp.forEach((job, idx)=>{
+    checkPageBreak(30);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(10.5);
+    doc.setTextColor(...dark);
+    doc.text(job.title, marginL, y);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...lightGray);
+    doc.text(job.dates, pageW - marginR, y, {align:'right'});
+    y += 12;
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...green);
+    doc.text(job.co + '  ·  ' + job.loc, marginL, y);
+    y += 13;
+    job.bullets.slice(0, f.maxB).forEach(b=>{
+      addBullet(b, 8.8, 11.8);
+    });
+    y += 8;
+  });
+
+  // ── PROJECTS ──
+  if(f.showProj){
+    addSectionHeader(f.projLbl);
+    D.projects.forEach(p=>{
+      checkPageBreak(24);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(9.5);
+      doc.setTextColor(...dark);
+      let nameText = p.name + (p.url ? '  -> ' + p.link : '');
+      const nameLines = doc.splitTextToSize(nameText, contentW);
+      nameLines.forEach(line=>{
+        checkPageBreak(12);
+        doc.text(line, marginL, y);
+        y += 11;
+      });
+      y += 1;
+      addWrappedText(p.desc, marginL, contentW, 8.6, gray, 11.3, 'normal');
+      y += 7;
+    });
+  }
+
+  if(!f.certFirst) renderCerts();
+
+  // ── AWARDS ──
+  if(f.showAwards && f.awardLbl){
+    addSectionHeader(f.awardLbl);
+    D.awards.forEach(a=>{
+      checkPageBreak(22);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(9.3);
+      doc.setTextColor(...dark);
+      doc.text(a.t, marginL, y);
+      y += 11;
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(8.6);
+      doc.setTextColor(...lightGray);
+      doc.text(a.o, marginL, y);
+      y += 13;
+    });
+  }
+
+  // ── HOBBIES ──
+  if(f.showHob){
+    addSectionHeader(f.hobLbl);
+    addWrappedText('Technology & AI Innovation - Capital Markets Research - Travel - Content Creation - Entrepreneurship', marginL, contentW, 8.8, gray, 11.8, 'normal');
+    y += 4;
+  }
+
+  // ── EDUCATION ──
+  addSectionHeader(f.eduLbl);
+  checkPageBreak(24);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(9.8);
+  doc.setTextColor(...dark);
+  doc.text(D.edu.deg, marginL, y);
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(8.6);
+  doc.setTextColor(...lightGray);
+  doc.text(D.edu.year, pageW - marginR, y, {align:'right'});
+  y += 12;
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(8.8);
+  doc.setTextColor(...gray);
+  doc.text(D.edu.inst, marginL, y);
+  y += 10;
+
+  // ── REFERENCES ──
+  if(f.showRefs){
+    addSectionHeader('References');
+    doc.setFont('helvetica','italic');
+    doc.setFontSize(8.8);
+    doc.setTextColor(...gray);
+    doc.text('References available upon request.', marginL, y);
+    y += 10;
+  }
+
+  const totalPages = doc.internal.getNumberOfPages();
+  for(let i=1;i<=totalPages;i++){
+    doc.setPage(i);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...lightGray);
+    doc.text('Page '+i+' of '+totalPages, pageW - marginR, pageH - 25, {align:'right'});
+  }
+
+  doc.save('Sagar_Sankhe_'+f.doc.replace(/\s/g,'_')+'_'+fmt+'.pdf');
+}
+sw("IN");
+</script>
 </body>
 </html>
