@@ -137,7 +137,7 @@ const D={
   phone:"+91 82377 14983",email:"sagarsankhe23@gmail.com",
   linkedin:"linkedin.com/in/sagarsankhe23",linkedinUrl:"https://www.linkedin.com/in/sagarsankhe23/",
   loc:"Borivali, Mumbai, 400092",qaforge:"qaforge.netlify.app",portfolio:"sagarsankhe.netlify.app",
-  nat:"Indian",dob:"23 January 1996",langs:"English, Hindi, Marathi",
+  nat:"Indian",dob:"23-08-1994",langs:"English, Hindi, Marathi",
   title:"Deputy Manager – Quality Assurance | Capital Markets & BFSI Fintech | 8+ Years",
   sum:{
     IN:"8+ years of QA expertise in BFSI and capital markets fintech, delivering zero-defect production releases across trading and non-trading platforms (Mobile/Android/iOS, Web, EXE). Deep domain command in Equity, F&O, Currency, and Commodities — including OMS, RMS, and multi-exchange risk system validation. Proven record leading QA for JM Financial and Angel One (India's largest retail broker), with ownership of 680+ test cases, 500+ regression workflows, and BOD file validation across 5 trading platforms. ISTQB CTFL v4.0 certified. Creator of QA Forge — a proprietary AI-powered test management tool that cut test authoring time by 40%.",
@@ -415,8 +415,19 @@ function buildATSPdf(fmt, f){
     });
   }
 
-  // ── HEADER (center-aligned) ──
-  const pageCx = pageW/2;
+  // ── HEADER (photo left + centered text block, or fully centered if no photo) ──
+  let headerCx = pageW/2;
+  let photoW = 0;
+  if(f.photo){
+    try{
+      const imgW = 66, imgH = 80;
+      doc.addImage(PHOTO, 'JPEG', marginL, y - 14, imgW, imgH);
+      photoW = imgW + 14;
+      // shift the centered text block to use remaining width to the right of photo
+      headerCx = marginL + photoW + (pageW - marginR - (marginL + photoW))/2;
+    }catch(e){ photoW = 0; }
+  }
+  const pageCx = headerCx;
 
   doc.setFont(FB,'bold');
   doc.setFontSize(21);
@@ -492,6 +503,9 @@ function buildATSPdf(fmt, f){
   }
 
   y += 8;
+  if(f.photo){
+    y = Math.max(y, (42 - 14) + 80 + 6); // ensure line clears photo bottom edge
+  }
   doc.setDrawColor(...green);
   doc.setLineWidth(1.4);
   doc.line(marginL, y, pageW - marginR, y);
