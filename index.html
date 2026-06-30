@@ -304,7 +304,6 @@ function sw(fmt){
     '<span class="ci">'+ico.em+' <a href="mailto:'+D.email+'">'+D.email+'</a></span>'+
     '<span class="ci">'+ico.li+' <a href="'+D.linkedinUrl+'" target="_blank">'+D.linkedin+'</a></span>'+
     '<span class="ci">'+ico.tl+' <a href="https://'+D.qaforge+'" target="_blank">'+D.qaforge+'</a></span>'+
-    (D.portfolio?'<span class="ci">'+ico.gl+' <a href="https://'+D.portfolio+'" target="_blank">'+D.portfolio+'</a></span>':'')+
     '</div>'+
     (extra.length?'<div class="extra-bar">'+extra.map(e=>'<span>'+e+'</span>').join('')+'</div>':'')+
     '</div></div>';
@@ -395,11 +394,17 @@ function buildATSPdf(fmt, f){
   function addBullet(text, fontSize, lineGap){
     doc.setFont(FB,'normal');
     doc.setFontSize(fontSize);
-    doc.setTextColor(...gray);
     const bulletIndent = 12;
     const lines = doc.splitTextToSize(text, contentW - bulletIndent);
+    const totalHeight = lines.length * lineGap;
+    // If the whole bullet doesn't fit on remaining page space, push entirely to next page
+    // (avoids orphaning a single line at the bottom of a page)
+    if(y + totalHeight > pageH - 38){
+      doc.addPage();
+      y = 42;
+    }
+    doc.setTextColor(...gray);
     lines.forEach((line,i)=>{
-      checkPageBreak(lineGap+2);
       if(i===0){
         doc.setTextColor(...green);
         doc.text('•', marginL, y);
@@ -410,53 +415,66 @@ function buildATSPdf(fmt, f){
     });
   }
 
-  // ── HEADER ──
+  // ── HEADER (center-aligned) ──
+  const pageCx = pageW/2;
+
   doc.setFont(FB,'bold');
   doc.setFontSize(21);
   doc.setTextColor(...dark);
-  doc.text(D.name, marginL, y);
-  y += 20;
+  doc.text(D.name, pageCx, y, {align:'center'});
+  y += 19;
 
   doc.setFont(FB,'bold');
   doc.setFontSize(10.6);
-  doc.setTextColor(...dark);
-  doc.text(D.title, marginL, y);
+  doc.setTextColor(...green);
+  doc.text(D.title, pageCx, y, {align:'center'});
   y += 15;
 
-  // Line 1: location | phone | email  (phone & email are clickable)
-  doc.setFont(FB,'normal');
-  doc.setFontSize(9.5);
-  doc.setTextColor(...gray);
-  let cx = marginL;
+  // Helper: write a centered line built from segments, with optional clickable links
+  function writeCenteredLine(segments){
+    // segments = [{text, isLink, url, color}]
+    doc.setFont(FB,'normal');
+    doc.setFontSize(9.5);
+    let totalW = 0;
+    segments.forEach(s=>{ doc.setFontSize(9.5); totalW += doc.getTextWidth(s.text); });
+    let startX = pageCx - totalW/2;
+    let cx = startX;
+    segments.forEach(s=>{
+      doc.setFont(FB,'normal');
+      doc.setFontSize(9.5);
+      doc.setTextColor(...(s.color||gray));
+      doc.text(s.text, cx, y);
+      const w = doc.getTextWidth(s.text);
+      if(s.isLink){
+        doc.link(cx, y-9, w, 11, {url:s.url});
+      }
+      cx += w;
+    });
+  }
+
   const sep = '  |  ';
 
-  function writeSeg(text, isLink, linkUrl, color){
-    doc.setTextColor(...(color||gray));
-    doc.text(text, cx, y);
-    const w = doc.getTextWidth(text);
-    if(isLink){
-      doc.link(cx, y-9, w, 11, {url:linkUrl});
-    }
-    cx += w;
-  }
-
-  cx = marginL;
-  writeSeg(D.loc, false);
-  writeSeg(sep, false);
-  writeSeg(D.phone, true, 'tel://'+D.phone.replace(/[^0-9]/g,''));
-  writeSeg(sep, false);
-  writeSeg(D.email, true, 'mailto:'+D.email);
+  // Line 1: location | phone | email
+  writeCenteredLine([
+    {text:D.loc},
+    {text:sep},
+    {text:D.phone, isLink:true, url:'tel://'+D.phone.replace(/[^0-9]/g,'')},
+    {text:sep},
+    {text:D.email, isLink:true, url:'mailto:'+D.email}
+  ]);
   y += 13;
 
-  // Line 2: linkedin | qaforge | portfolio (all clickable)
-  cx = marginL;
-  writeSeg(D.linkedin, true, D.linkedinUrl);
-  writeSeg(sep, false);
-  writeSeg(D.qaforge, true, 'https://'+D.qaforge+'/');
+  // Line 2: linkedin | qaforge | portfolio
+  let line2 = [
+    {text:D.linkedin, isLink:true, url:D.linkedinUrl},
+    {text:sep},
+    {text:D.qaforge, isLink:true, url:'https://'+D.qaforge+'/'}
+  ];
   if(D.portfolio){
-    writeSeg(sep, false);
-    writeSeg(D.portfolio, true, 'https://'+D.portfolio+'/');
+    line2.push({text:sep});
+    line2.push({text:D.portfolio, isLink:true, url:'https://'+D.portfolio+'/'});
   }
+  writeCenteredLine(line2);
   y += 10;
 
   // Extra info (DOB/Nationality/Languages) for relevant formats
@@ -469,7 +487,7 @@ function buildATSPdf(fmt, f){
     doc.setFont(FB,'normal');
     doc.setFontSize(9);
     doc.setTextColor(...lightGray);
-    doc.text(extras.join('   '), marginL, y);
+    doc.text(extras.join('   '), pageCx, y, {align:'center'});
     y += 4;
   }
 
@@ -539,7 +557,8 @@ function buildATSPdf(fmt, f){
   // ── EXPERIENCE ──
   addSectionHeader(f.expLbl);
   D.exp.forEach((job)=>{
-    checkPageBreak(30);
+    // Keep job title + company line + first bullet's first line together (avoid orphan header)
+    checkPageBreak(55);
     doc.setFont(FB,'bold');
     doc.setFontSize(10.6);
     doc.setTextColor(...dark);
